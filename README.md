@@ -11,3 +11,5 @@ CAE Components:
 * [CAE-Example-Application](https://github.com/rwth-acis/CAE-Example-Application)
 * [CAE-DockerImage](https://github.com/rwth-acis/CAE-DockerImage)
 * ~~[CAE-GitHub-Proxy](https://github.com/rwth-acis/CAE-GitHub-Proxy)~~ (deprecated)
+
+[![Gitter](https://badges.gitter.im/rwth-acis/CAE.svg)](https://gitter.im/rwth-acis/CAE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
