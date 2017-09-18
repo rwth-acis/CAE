@@ -13,6 +13,8 @@ CAE Tools and Apps
 * [CAE-WireframingEditor](https://github.com/rwth-acis/CAE-WireframingEditor)
 * [CAE-Example-Application](https://github.com/rwth-acis/CAE-Example-Application)
 * [CAE-DockerImage](https://github.com/rwth-acis/CAE-DockerImage)
+* [Syncmeta](https://github.com/rwth-acis/syncmeta)
+* [ROLE SDK](https://github.com/rwth-acis/ROLE-SDK)
 
 [![Gitter](https://badges.gitter.im/rwth-acis/CAE.svg)](https://gitter.im/rwth-acis/CAE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
