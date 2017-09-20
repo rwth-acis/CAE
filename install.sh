@@ -18,12 +18,20 @@ else
   echo "=> CAE-Model-Persistence-Service already cloned."
 fi
 
-if [ ! -d "CAE-Code-Generation-Service" ]; then
-    echo "=> Cloning CAE-Code-Generation-Service"
-    git clone https://github.com/rwth-acis/CAE-Code-Generation-Service.git > /dev/null
+if [ ! -d "CAE-Simple-Model-Representation" ]; then
+    echo "=> Cloning CAE-Simple-Model-Representation"
+    https://github.com/rwth-acis/CAE-Simple-Model-Representation.git > /dev/null
     echo "DONE"
 else 
-    echo "=> CAE-Code-Generation-Service already cloned."
+    echo "=> CAE-Simple-Model-Representation already cloned."
+fi
+
+if [ ! -d "CAE-Model-Persistence-Service" ]; then
+  echo "=> Cloning CAE-Model-Persistence-Service"
+  git clone https://github.com/rwth-acis/CAE-Model-Persistence-Service.git > /dev/null
+  echo "DONE"
+else 
+  echo "=> CAE-Model-Persistence-Service already cloned."
 fi
 
 

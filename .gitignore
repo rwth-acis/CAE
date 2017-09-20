@@ -25,6 +25,7 @@ CAE-DockerImage
 CAE-Code-Generation-Service
 CAE-Frontend
 CAE-Model-Persistence-Service
+CAE-Simple-Model-Representation
 syncmeta
 CAE-WireframingEditor
 myCAE
