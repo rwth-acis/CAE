@@ -9,6 +9,11 @@ sudo ln -sf $HOME/acis/CAE/conf/services.conf /etc/supervisor/conf.d/services.co
 sudo ln -sf $HOME/acis/CAE/conf/services_debug.conf /etc/supervisor/conf.d/services_debug.conf
 sudo ln -sf $HOME/acis/CAE/conf/widgets.conf /etc/supervisor/conf.d/widgets.conf
 
+#create the log folder if not already here
+if [ ! -d "log" ]; then
+    mkdir log
+fi
+
 
 if [ ! -d "CAE-Model-Persistence-Service" ]; then
   echo "=> Cloning CAE-Model-Persistence-Service"
