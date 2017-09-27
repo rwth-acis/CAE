@@ -8,6 +8,8 @@ sudo sh ./scripts/copy_frontend.sh
 #make sure supervisor service is running 
 #check it with 
 # sudo service supervisor status
+chmod -v a+x ./scripts/permissions.sh
+sh scripts/permissions.sh
 
 sudo supervisorctl reread
 sudo supervisorctl update
