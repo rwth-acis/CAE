@@ -6,3 +6,4 @@ chmod -v a+x ./scripts/start_services.sh
 chmod -v a+x ./scripts/start_services_debug.sh
 chmod -v a+x ./scripts/start_yjs.sh
 chmod -R 777 ../role-m10-sdk/
+chmod -R 777 ./myCAE/
