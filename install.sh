@@ -12,6 +12,7 @@ sudo ln -sf $HOME/acis/CAE/conf/widgets.conf /etc/supervisor/conf.d/widgets.conf
 sudo ln -sf $HOME/acis/CAE/conf/syncmeta_dev.conf /etc/supervisor/conf.d/syncmeta_dev.conf
 sudo ln -sf $HOME/acis/CAE/conf/wireframing_dev.conf /etc/supervisor/conf.d/wireframing_dev.conf
 sudo ln -sf $HOME/acis/CAE/conf/wireframing_testDev.conf /etc/supervisor/conf.d/wireframing_testDev.conf
+sudo ln -sf $HOME/acis/CAE/conf/wireframing_widget.conf /etc/supervisor/conf.d/wireframing_widget.conf
 
 #create the log folder if not already here
 if [ ! -d "log" ]; then
