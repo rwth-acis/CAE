@@ -15,6 +15,9 @@ sudo ln -sf $HOME/acis/CAE/conf/wireframing_dev.conf /etc/supervisor/conf.d/wire
 sudo ln -sf $HOME/acis/CAE/conf/wireframing_testDev.conf /etc/supervisor/conf.d/wireframing_testDev.conf
 sudo ln -sf $HOME/acis/CAE/conf/wireframing_widget.conf /etc/supervisor/conf.d/wireframing_widget.conf
 
+sudo ln -sf $HOME/acis/CAE/conf/jenkins.conf /etc/supervisor/conf.d/jenkins.conf
+
+
 #create the log folder if not already here
 if [ ! -d "log" ]; then
     mkdir log
