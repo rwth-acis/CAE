@@ -1,1 +1,0 @@
-cd /home/mario/acis/CAE/syncmeta && grunt connect

@@ -1,1 +1,0 @@
-cd /home/mario/acis/CAE/CAE-WireframingEditor && npm run devTest

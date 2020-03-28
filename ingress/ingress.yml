@@ -1,0 +1,132 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cae-frontend
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /
+          backend:
+            serviceName: cae-frontend-service
+            servicePort: 8070
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cae-yjs
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.org/websocket-services: "yjs-server"
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /yjs(/|$)(.*)
+          backend:
+            serviceName: yjs-server
+            servicePort: 1234
+
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cae-socket
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.org/websocket-services: "yjs-server"
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /socket.io
+          backend:
+            serviceName: yjs-server
+            servicePort: 1234
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cae-backend
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /backend(/|$)(.*)
+          backend:
+            serviceName: cae-backend-outside
+            servicePort: 8081
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cae-las2peer
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /las2peer
+          backend:
+            serviceName: cae-backend-outside
+            servicePort: 8081
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cae-jenkins
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /jenkins
+          backend:
+            serviceName: cae-jenkins-service
+            servicePort: 8082
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cae-deploy
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /deploy(/|$)(.*)
+          backend:
+            serviceName: cae-jenkins-service
+            servicePort: 8083
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cae-deploy-backend
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /deploybackend
+          backend:
+            serviceName: cae-jenkins-service
+            servicePort: 8083

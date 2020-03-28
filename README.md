@@ -2,7 +2,7 @@
 The Community Application Editor
 
 CAE Core Components:
-* [CAE-Templates](https://github.com/rwth-acis/CAE-Templates)
+* [CAE-Templates](https://github.com/CAE-Community-Application-Editor/CAE-Templates)
 * [CAE-Frontend](https://github.com/rwth-acis/CAE-Frontend)
 * [CAE-Code-Generation-Service](https://github.com/rwth-acis/CAE-Code-Generation-Service)
 * [CAE-Model-Persistence-Service](https://github.com/rwth-acis/CAE-Model-Persistence-Service)
@@ -11,42 +11,55 @@ CAE Core Components:
 
 CAE Tools and Apps
 * [CAE-WireframingEditor](https://github.com/rwth-acis/CAE-WireframingEditor)
-* [CAE-Example-Application](https://github.com/rwth-acis/CAE-Example-Application)
-* [CAE-DockerImage](https://github.com/rwth-acis/CAE-DockerImage)
+* [CAE-Jenkins](https://github.com/rwth-acis/cae-jenkins)
+* [CAE-Deployment](https://github.com/rwth-acis/cae-deployment)
 * [Syncmeta](https://github.com/rwth-acis/syncmeta)
-* [ROLE SDK](https://github.com/rwth-acis/ROLE-SDK)
+* [CAE-Example-Application](https://github.com/rwth-acis/CAE-Example-Application)
+* ~~[CAE-DockerImage](https://github.com/rwth-acis/CAE-DockerImage)~~(deprecated)
+* ~~[CAE-LiveDeploy](https://github.com/rwth-acis/CAE-LiveDeploy)~~(deprecated)
+* ~~[ROLE SDK](https://github.com/rwth-acis/ROLE-SDK)~~(deprecated)
 
 [![Gitter](https://badges.gitter.im/rwth-acis/CAE.svg)](https://gitter.im/rwth-acis/CAE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-## Using the scripts
-__Note__: These scripts are for developers who want/need to work on the CAE.
- If you just want to use the CAE, have a look at the [CAE-DockerImage](https://github.com/rwth-acis/CAE-DockerImage) repository. It automatically deploys a fully functional and configured instance of the CAE for you in a Docker container.
-1. Start with ```sh install.sh```.
-    This script tries to install and setup supervisor and clones all necessary repositories.
-    Additionally you need a running ROLE server. Check out the [releases](https://github.com/rwth-acis/ROLE-SDK/releases) or build the [ROLE SDK](https://github.com/rwth-acis/ROLE-SDK)
- yourself.
-2. Follow the install instrutions in the corresponding repositories to build the las2peer services and ROLE widgets. The links to the repositories can be found above. Please have a look at the README-files and the wiki's of the repositories.
-3. If everything was build and configured correctly just run ```sh setup.sh```. 
-The script just copies the builds of the repositories cloned in step 1 into a separate folder.
-The folder is called __myCAE__ and has the following structure:
- * __etc__ property files of the services
- * __lib__ the libraries for the cae backend services
- * __service__ the cae backend services
- * __frontend__
-    * __cae__ the cae widgets
-    * __syncmeta__ the syncmeta widgets
-    * __wireframe__ the wireframing editor widget
+## Usage
+This repository contains Kubernetes configurations to deploy CAE. If you want to try it locally, it would be best to setup [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/). 
 
-Check the folder structure and make sure eveything is there and your urls are set correctly.
+Initially, apply configurations under 'config', 'ingress' and 'volumes'. After, deployment and service configurations (backend.yaml, frontend.yaml, jenkins.yml) are need to be applied.
 
+All setup is tried to be parametrized with configmap and secrets. Therefore, you need to update files under `config` folder only according to your setup. If you see something to improve or change in other parts, feel free to open merge request.
 
-4. Run ```sh start``` to open the supervisor frontend at http://localhost:9001 in your standard browser. From here you can manually start the services you want to work with. 
-The following programs should be available in the supervisor frontend:
-* __role__ start the role service at http://127.0.0.1:8073.
-* __services__ the las2peer network available at http://localhost:8080/.
-* __services_debug__ the las2peer network available at http://localhost:8080/ in debug mode.
-* __yjs__ the y-websockets-server at port 1234.
-* __widgets__ the webserver to serve the widgets at http://127.0.0.1:8001.The _widgets_-program requires the http-server module. You can get it by just running ```npm install -g http-server```.
+Detailed explaination of the fields in the configmap and secrets can be found in the following section.
 
-__Note__
-Start either __services__ or __services_debug__, because they use the same port(See step 4 from above). They are both exactly the same with just one difference that you can attach the java remote debugger to debug the las2peer-services with Eclipse or IntelliJ.
+**Note**: Nginx ingress is used therefore it should be installed to Kubernetes cluster beforehand. `ingress-nginx.sh` can be used for this purpose. Also, if you are using `minikube` as Kubernetes cluster, you need to call `minikube addons enable ingress` command in order to enable Nginx ingress. 
+
+**Note**: Deployment configurations have *kubernetes.io/role:master* as nodeSelector, therefore this label should be added to cluster nodes which CAE application is wanted to run on it. Label can be added to node with following command: `kubectl label nodes <node_name> kubernetes.io/role=master`
+
+### Fields in configmap.yml
+* `git_organization`: Github organization which repos of created applications will reside
+* `jenkins_url`: Url of Jenkins instance which CAE application is using during deployment
+* `jenkins_prefix`: Path prefix to all paths of Jenkins. Let's say Jenkins is running on `127.0.0.1:8080` and login page of Jenkins is accessed with `127.0.0.1:8080/login` address. If `/jenkins` value is provided as `jenkins_prefix`, login page will be accessed with `127.0.0.1:8080/jenkins/login` from now on.
+* `widget_homebase_url`: Url of widget homebase. It should be github.io adress of Github organization of provided with `git_organization` value. If Github organization name is 'cae', `widget_homebase_url` need to be *https://cae.github.io*
+* `temp_deployment_repo`: Git repo address to store project temporary during deployment
+* `cae_deployment_docker_image`: Docker image which is used during deployment.
+* `frontend_widgets_url`: Url address of where CAE widgets are served. Address of CAE-Frontend need to be given to this value.
+* `yjs_server`: Root url address of Yjs websocket server. If it is running behind reverse proxy, relative path need to be provided with the following `yjs_resource_path` field.
+* `yjs_resource_path`: Resource path of Yjs websocker server. If websocket server running behind reverse proxy and `/yjs` path is redirected to websocket server, this field need to be `/yjs/socket.io`
+* `codegen_service_url`: Url address of Code Generation Service
+* `code_editor_bower`: Url address of Bower components for Live Code Editor widget.
+* `cae_backend_url`: Url address of CAE backend
+* `cae_application_deployment_url`: Url address of deployed CAE application
+* `oidc_client_id`: OIDC client id which used in CAE Frontend for authentication purpose. Client id can be acquired from Learning Layers after client registration
+
+### Fields in secrets
+**Attention**: All the values in the secrets need to be base64 encoded
+
+#### Fields in secrets/github-creds.yml
+* `username`: Username of Github account
+* `password`: Password of Github account. Instead of using account password directly, it would be better create *API Token* under *Developer Setting* in Github. Created API Token can be provided as password value in here
+
+#### Fields in secrets/jenkins-job-token.yml
+* `token`: Token which is used to trigger Jenkins job during deployment. It can be generated randomly. It should be in UUID format.
+
+#### Fields in secrets/mysql-creds.yml
+* `username`: Username of MySQL user
+* `password`: Password of MySQL user
