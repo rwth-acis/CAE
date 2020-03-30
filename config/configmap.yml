@@ -1,0 +1,27 @@
+# Only update parts between brackets(<>)
+# Paths are needed to update only if ingress is updated 
+
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: cae-config
+data:
+  git_organization: <github_organization_name>
+  # Relative path of jenkins_url need to be same with jenkins_prefix
+  # Current ingress configuration is proxying '/jenkins' path to Jenkins
+  # therefore 'jenkins_prefix' and relative path of 'jenkins_url' is made '/jenkins'
+  # Do not change it if ingress is not updated
+  jenkins_url: <kube_cluster_address>/jenkins
+  jenkins_prefix: /jenkins
+  widget_homebase_url: https://<git_organization_name>.github.io/
+  temp_deployment_repo: https://github.com/CAE-Community-Application-Editor/CAE-Deployment-Temp
+  cae_deployment_docker_image: rwthacis/cae-deployment
+  frontend_widgets_url: <kube_cluster_address>
+  yjs_server: <kube_cluster_address>
+  yjs_resource_path: /yjs/socket.io
+  codegen_service_url: <kube_cluster_address>/backend/CodeGen
+  code_editor_bower: <kube_cluster_address>/cae-frontend/liveCodeEditorWidget/bower_components/
+  cae_backend_url: <kube_cluster_address>/backend
+  cae_application_deployment_url: "<kube_cluster_address>/deploy"
+  oidc_client_id: "<oidc_client_id>"
+  

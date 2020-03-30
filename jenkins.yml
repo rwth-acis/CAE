@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cae-jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cae-jenkins
+  template:
+    metadata:
+      labels:
+        app: cae-jenkins
+    creationTimestamp: null
+    spec:
+      tolerations:
+      - key: "node-role.kubernetes.io"
+        operator: "Equal"
+        value: "master"
+        effect: "NoSchedule"
+      nodeSelector:
+        kubernetes.io/role: master
+      containers:
+      - name: jenkins
+        image: rwthacis/cae-jenkins
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8082
+        - containerPort: 50000
+        env:
+        - name: JENKINS_OPTS
+          value: --httpPort=8082
+        - name: JENKINS_JOB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: jenkins-job-token
+              key: token
+        - name: TEMP_DEPLOYMENT_REPO
+          value: $(temp_deployment_repo)
+        - name: MICROSERVICE_WEBCONNECTOR_PORT
+          value: "8088"
+        - name: WIDGET_HTTP_PORT
+          value: "8087"
+        - name: MICROSERVICE_PORT
+          value: "8086"
+        - name: JENKINS_URL
+          value: $(jenkins_url)
+        - name: JENKINS_PREFIX
+          value: $(jenkins_prefix)
+        - name: DEPLOYMENT_URL
+          value: $(cae_application_deployment_url)
+        - name: CAE_DEPLOYMENT_DOCKER_IMAGE
+          value: $(cae_deployment_docker_image)
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        volumeMounts:
+          - name: jenkins-persistent-storage
+            mountPath: /var/jenkins_home 
+          - name: docker-sock
+            mountPath: /var/run/docker.sock
+        envFrom:
+          - configMapRef:
+              name: cae-config
+      volumes:
+      - name: jenkins-persistent-storage
+        persistentVolumeClaim:
+          claimName: cae-jenkins-pv-claim
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cae-jenkins-service
+spec:
+  type: NodePort
+  selector:
+    app: cae-jenkins
+  ports:
+    - name: http
+      port: 8082
+      targetPort: 8082
+      nodePort: 30167
+    - name: deploy
+      port: 8083
+      targetPort: 8083
+      nodePort: 30171

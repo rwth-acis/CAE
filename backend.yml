@@ -1,0 +1,172 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cae-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cae-backend
+  template:
+    metadata:
+      labels:
+        app: cae-backend
+    creationTimestamp: null
+    spec:
+      tolerations:
+      - key: "node-role.kubernetes.io"
+        operator: "Equal"
+        value: "master"
+        effect: "NoSchedule"
+      nodeSelector:
+        kubernetes.io/role: master
+      containers:
+      - name: cae-code-generation-service
+        image: rwthacis/cae-code-generation-service
+        imagePullPolicy: Always
+        ports: 
+        - containerPort: 8080
+        - containerPort: 8443
+        - containerPort: 9011
+        env: 
+        - name: HTTP_PORT
+          value: '8080'
+        - name: HTTPS_PORT
+          value: '8443'
+        - name: LAS2PEER_PORT
+          value: '9011'
+        - name: SERVICE_PASSPHRASE
+          value: someNewPass
+        - name: GIT_USER
+          valueFrom:
+            secretKeyRef:
+              name: github-creds
+              key: username
+        - name: GIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: github-creds
+              key: password
+        - name: GIT_USER_MAIL
+          value: mail@rwth
+        - name: GIT_ORGANIZATION
+          value: $(git_organization)
+        - name: TEMPLATE_REPOSITORY
+          value: CAE-Templates
+        - name: DEPLOYMENT_REPO
+          value: CAE-Deployment-Temp
+        - name: JENKINS_URL
+          value: $(jenkins_url)
+        - name: JENKINS_JOB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: jenkins-job-token
+              key: token
+        - name: BUILD_JOB_NAME
+          value: Build-Job
+        - name: DOCKER_JOB_NAME
+          value: Docker-Job
+        - name: USED_GIT_HOST
+          value: GitHub
+        - name: BASE_URL
+          value: https://github.com
+        - name: WIDGET_HOME_BASE_URL
+          value: $(widget_homebase_url)
+        - name: OIDC_PROVIDER
+          value: https://api.learning-layers.eu/o/oauth2
+        envFrom:
+          - configMapRef:
+              name: cae-config
+      - name: mysql
+        image: mysql
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-creds
+              key: password
+        - name: MYSQL_DATABASE
+          value: commedit
+        args: [
+          "--character-set-server=utf8mb4", 
+          "--character_set_filesystem=utf8",
+          "--collation-server=utf8mb4_unicode_ci",
+          "--init-connect='SET NAMES utf8'",
+          "--init_connect='SET collation_connection = utf8_general_ci'",
+          "--skip-character-set-client-handshake",
+          "--default-authentication-plugin=mysql_native_password"
+        ]
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      - name: cae-model-persistence-service
+        image: rwthacis/cae-model-persistence-service
+        imagePullPolicy: Always
+        ports: 
+        - containerPort: 8081
+        - containerPort: 8444
+        - containerPort: 9012
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: HTTP_PORT
+          value: '8081'
+        - name: HTTPS_PORT
+          value: '8444'
+        - name: LAS2PEER_PORT
+          value: '9012'
+        - name: SERVICE_PASSPHRASE
+          value: someNewPass
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-creds
+              key: username
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-creds
+              key: password
+        - name: MYSQL_HOST
+          value: 127.0.0.1
+        - name: MYSQL_PORT
+          value: '3306'
+        - name: MYSQL_DATABASE
+          value: commedit
+        - name: DEPLOYMENT_URL
+          value: localhost:8090 # Change it
+        - name: BOOTSTRAP
+          value: $(POD_IP):9011
+        - name: CROSS_ORIGIN_RESOURCE_DOMAIN 
+          value: '*'
+        - name: INIT_WIREFRAME_EXTENSION
+          value: 'true'
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: cae-mysql-pv-claim
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cae-backend-outside
+spec:
+  type: NodePort
+  selector:
+    app: cae-backend
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+      nodePort: 30165
+    - name: http2
+      protocol: TCP
+      port: 81
+      targetPort: 8081
+      nodePort: 30166

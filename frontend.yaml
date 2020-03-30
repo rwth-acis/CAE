@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cae-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cae-frontend
+  template:
+    metadata:
+      labels:
+        app: cae-frontend
+    creationTimestamp: null
+    spec:
+      tolerations:
+      - key: "node-role.kubernetes.io"
+        operator: "Equal"
+        value: "master"
+        effect: "NoSchedule"
+      nodeSelector:
+        kubernetes.io/role: master
+      containers:
+      - name: cae-frontend
+        image: rwthacis/cae-frontend:develop
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8070
+        env:
+        - name: WEBHOST
+          value: $(frontend_widgets_url)
+        - name: ROLEHOST
+          value: http://127.0.0.1:30168
+        - name: YJS
+          value: $(yjs_server)
+        - name: CODEGEN
+          value: $(codegen_service_url)
+        - name: CODE_EDITOR_BOWER
+          value: $(code_editor_bower)
+        - name: CAE_BACKEND_URL
+          value: $(cae_backend_url)
+        - name: OIDC_CLIENT_ID
+          value: $(oidc_client_id)
+        - name: YJS_RESOURCE_PATH
+          value: $(yjs_resource_path)
+        envFrom:
+          - configMapRef:
+              name: cae-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cae-frontend-service
+spec:
+  type: NodePort
+  selector:
+    app: cae-frontend
+  ports:
+  - port: 8070
+    targetPort: 8070
+    nodePort: 30169
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yjs-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yjs-server
+  template:
+    metadata:
+      labels:
+        app: yjs-server
+    creationTimestamp: null
+    spec:
+      tolerations:
+      - key: "node-role.kubernetes.io"
+        operator: "Equal"
+        value: "master"
+        effect: "NoSchedule"
+      nodeSelector:
+        kubernetes.io/role: master
+      containers:
+      - name: yjs-server
+        image: rwthacis/y-websockets-server
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 1234
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: yjs-server
+spec:
+  type: NodePort
+  selector:
+    app: yjs-server
+  ports:
+  - port: 1234
+    targetPort: 1234
+    nodePort: 30164
