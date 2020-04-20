@@ -63,3 +63,5 @@ Detailed explaination of the fields in the configmap and secrets can be found in
 #### Fields in secrets/mysql-creds.yml
 * `username`: Username of MySQL user
 * `password`: Password of MySQL user
+
+**Note**: There is a problem with using non-root db user currently, therefore please use root user in database. 
