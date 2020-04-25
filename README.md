@@ -21,7 +21,17 @@ CAE Tools and Apps
 
 [![Gitter](https://badges.gitter.im/rwth-acis/CAE.svg)](https://gitter.im/rwth-acis/CAE?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+<a href="https://las2peer.org/">
+<img src="http://dbis.rwth-aachen.de/noracle/assets/las2peer.svg" alt="las2peer" style="width:420px;height:70px"/>
+</a>
+
 ## Usage
+CAE is currently deployed in our server, you can access it with following address:
+
+https://cae.tech4comp.dbis.rwth-aachen.de
+
+If you want to create your own CAE setup, please continue to read.
+
 This repository contains Kubernetes configurations to deploy CAE. If you want to try it locally, it would be best to setup [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/). 
 
 Initially, apply configurations under 'config', 'ingress' and 'volumes'. After, deployment and service configurations (backend.yaml, frontend.yaml, jenkins.yml) are need to be applied.
