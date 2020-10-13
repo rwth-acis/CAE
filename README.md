@@ -2,10 +2,11 @@
 The Community Application Editor
 
 CAE Core Components:
-* [CAE-Templates](https://github.com/CAE-Community-Application-Editor/CAE-Templates)
+* [CAE-Templates](https://github.com/rwth-acis/CAE-Templates)
 * [CAE-Frontend](https://github.com/rwth-acis/CAE-Frontend)
 * [CAE-Code-Generation-Service](https://github.com/rwth-acis/CAE-Code-Generation-Service)
 * [CAE-Model-Persistence-Service](https://github.com/rwth-acis/CAE-Model-Persistence-Service)
+* [CAE-Project-Management-Service](https://github.com/rwth-acis/CAE-Project-Management-Service)
 * [CAE-Simple-Model-Representation](https://github.com/rwth-acis/CAE-Simple-Model-Representation)
 * ~~[CAE-GitHub-Proxy](https://github.com/rwth-acis/CAE-GitHub-Proxy)~~ (deprecated)
 
@@ -26,11 +27,12 @@ CAE Tools and Apps
 </a>
 
 ## Usage
-CAE is currently deployed in our server, you can access it with following address:
+CAE is currently deployed in the tech4comp cluster, you can access it with following address:
 
 https://cae.tech4comp.dbis.rwth-aachen.de
 
-If you want to create your own CAE setup, please continue to read.
+If you want to run your own CAE instance, please continue to read.
+If you are a developer and want to setup a development instance, please also have a look at the guide in the [wiki](https://github.com/rwth-acis/CAE/wiki/Setting-up-your-own-local-CAE-instance).
 
 This repository contains Kubernetes configurations to deploy CAE. If you want to try it locally, it would be best to setup [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/). 
 
