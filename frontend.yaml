@@ -22,7 +22,7 @@ spec:
         kubernetes.io/role: master
       containers:
       - name: cae-frontend
-        image: rwthacis/cae-frontend:develop
+        image: rwthacis/cae-frontend:ba-philipp
         imagePullPolicy: Always
         ports:
         - containerPort: 8070
