@@ -21,36 +21,6 @@ spec:
       nodeSelector:
         kubernetes.io/role: master
       containers:
-      - name: cae-project-management-service
-        image: rwthacis/cae-project-management-service:ba-philipp
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8082
-        - containerPort: 8445
-        - containerPort: 9013
-        env:
-        - name: HTTP_PORT
-          value: '8082'
-        - name: HTTPS_PORT
-          value: '8445'
-        - name: LAS2PEER_PORT
-          value: '9013'
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: mysql-creds
-              key: username
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-creds
-              key: password
-        - name: MYSQL_HOST
-          value: 127.0.0.1
-        - name: MYSQL_PORT
-          value: '3306'
-        - name: MYSQL_DATABASE
-          value: commedit
       - name: cae-code-generation-service
         image: rwthacis/cae-code-generation-service
         imagePullPolicy: Always
@@ -104,6 +74,11 @@ spec:
           value: $(widget_homebase_url)
         - name: OIDC_PROVIDER
           value: https://api.learning-layers.eu/o/oauth2
+        - name: TOKEN 
+          valueFrom:
+            secretKeyRef:
+              name: github-creds
+              key: personal_access_token
         envFrom:
           - configMapRef:
               name: cae-config
@@ -176,6 +151,66 @@ spec:
           value: '*'
         - name: INIT_WIREFRAME_EXTENSION
           value: 'true'
+      - name: cae-project-management-service
+        image: rwthacis/cae-project-management-service
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8082
+        - containerPort: 8445
+        - containerPort: 9013
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: HTTP_PORT
+          value: '8082'
+        - name: HTTPS_PORT
+          value: '8445'
+        - name: LAS2PEER_PORT
+          value: '9013'
+        - name: SERVICE_PASSPHRASE
+          value: someNewPass
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-creds
+              key: username
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-creds
+              key: password
+        - name: MYSQL_HOST
+          value: 127.0.0.1
+        - name: MYSQL_PORT
+          value: '3306'
+        - name: MYSQL_DATABASE
+          value: commedit
+        - name: GITHUB_PERSONAL_ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: github-creds-projects
+              key: personal_access_token
+        - name: GITHUB_ORGANIZATION
+          value: $(git_organization_projects)
+        - name: GITHUB_OAUTH_CLIENTID
+          valueFrom:
+            secretKeyRef:
+              name: github-creds-oauth-app
+              key: oauth_clientid
+        - name: GITHUB_OAUTH_CLIENTSECRET
+          valueFrom:
+            secretKeyRef:
+              name: github-creds-oauth-app
+              key: oauth_clientsecret
+        - name: REQ_BAZ_PROJECT_ID
+          value: $(req_baz_project_id)
+        - name: BOOTSTRAP
+          value: $(POD_IP):9012
+        envFrom:
+          - configMapRef:
+              name: cae-config
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
@@ -200,8 +235,3 @@ spec:
       port: 81
       targetPort: 8081
       nodePort: 30166
-    - name: http3
-      protocol: TCP
-      port: 82
-      targetPort: 8082
-      nodePort: 30167
