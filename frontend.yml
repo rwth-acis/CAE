@@ -22,7 +22,7 @@ spec:
         kubernetes.io/role: master
       containers:
       - name: cae-frontend
-        image: rwthacis/cae-frontend:develop
+        image: rwthacis/cae-frontend
         imagePullPolicy: Always
         ports:
         - containerPort: 8070
@@ -43,6 +43,15 @@ spec:
           value: $(oidc_client_id)
         - name: YJS_RESOURCE_PATH
           value: $(yjs_resource_path)
+        - name: DEPLOYMENT_URL
+          value: $(cae_application_deployment_url)
+        - name: GIT_ORGANIZATION
+          value: $(git_organization)
+        - name: GITHUB_OAUTH_CLIENTID
+          valueFrom:
+            secretKeyRef:
+              name: github-creds-oauth-app
+              key: oauth_clientid
         envFrom:
           - configMapRef:
               name: cae-config

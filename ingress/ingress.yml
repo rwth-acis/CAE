@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: cae-frontend
@@ -8,13 +8,12 @@ spec:
   rules:
   - http:
       paths:
-        - path: /
-          backend:
-            serviceName: cae-frontend-service
-            servicePort: 8070
+      - backend:
+          serviceName: cae-frontend-service
+          servicePort: 8070
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: cae-yjs
@@ -26,14 +25,14 @@ spec:
   rules:
   - http:
       paths:
-        - path: /yjs(/|$)(.*)
-          backend:
-            serviceName: yjs-server
-            servicePort: 1234
-
+      - backend:
+          serviceName: yjs-server
+          servicePort: 1234
+        path: /yjs(/|$)(.*)
+        
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: cae-socket
@@ -44,13 +43,13 @@ spec:
   rules:
   - http:
       paths:
-        - path: /socket.io
-          backend:
-            serviceName: yjs-server
-            servicePort: 1234
+      - backend:
+          serviceName: yjs-server 
+          servicePort: 1234
+        path: /socket.io
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: cae-backend
@@ -61,13 +60,12 @@ spec:
   rules:
   - http:
       paths:
-        - path: /backend(/|$)(.*)
-          backend:
-            serviceName: cae-backend-outside
-            servicePort: 8081
-
+      - backend:
+          serviceName: cae-backend-outside
+          servicePort: 81
+        path: /backend(/|$)(.*)
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: cae-las2peer
@@ -77,13 +75,14 @@ spec:
   rules:
   - http:
       paths:
-        - path: /las2peer
-          backend:
-            serviceName: cae-backend-outside
-            servicePort: 8081
+      - backend:
+          serviceName: cae-backend-outside
+          servicePort: 81
+        path: /las2peer
+
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: cae-jenkins
@@ -93,13 +92,14 @@ spec:
   rules:
   - http:
       paths:
-        - path: /jenkins
-          backend:
-            serviceName: cae-jenkins-service
-            servicePort: 8082
+      - backend:
+          serviceName: cae-jenkins-service
+          servicePort: 8082
+        path: /jenkins
+
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: cae-deploy
@@ -110,13 +110,14 @@ spec:
   rules:
   - http:
       paths:
-        - path: /deploy(/|$)(.*)
-          backend:
-            serviceName: cae-jenkins-service
-            servicePort: 8083
+      - backend:
+          serviceName: cae-jenkins-service
+          servicePort: 8083
+        path: /deploy(/|$)(.*)
+            
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: cae-deploy-backend
@@ -126,7 +127,7 @@ spec:
   rules:
   - http:
       paths:
-        - path: /deploybackend
-          backend:
-            serviceName: cae-jenkins-service
-            servicePort: 8083
+      - backend:
+          serviceName: cae-jenkins-service
+          servicePort: 8083
+        path: /deploybackend

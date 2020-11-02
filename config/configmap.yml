@@ -7,6 +7,8 @@ metadata:
   name: cae-config
 data:
   git_organization: <github_organization_name>
+  # you may use the same github organization for both the source code and the github projects
+  git_organization_projects: <github_organization_name>
   # Relative path of jenkins_url need to be same with jenkins_prefix
   # Current ingress configuration is proxying '/jenkins' path to Jenkins
   # therefore 'jenkins_prefix' and relative path of 'jenkins_url' is made '/jenkins'
@@ -24,4 +26,5 @@ data:
   cae_backend_url: <kube_cluster_address>/backend
   cae_application_deployment_url: "<kube_cluster_address>/deploy"
   oidc_client_id: "<oidc_client_id>"
+  req_baz_project_id: "<requirements_bazaar_project_id>"
   
