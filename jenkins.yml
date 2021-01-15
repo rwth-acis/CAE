@@ -43,7 +43,7 @@ spec:
           value: "8087"
         - name: MICROSERVICE_PORT
           value: "8086"
-        - name: JENKINS_URL
+        - name: URL_JENKINS
           value: $(jenkins_url)
         - name: JENKINS_PREFIX
           value: $(jenkins_prefix)
