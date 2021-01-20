@@ -211,6 +211,8 @@ spec:
         envFrom:
           - configMapRef:
               name: cae-config
+      imagePullSecrets:
+      - name: docker-cred
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:

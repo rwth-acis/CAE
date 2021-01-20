@@ -63,6 +63,8 @@ spec:
         envFrom:
           - configMapRef:
               name: cae-config
+      imagePullSecrets:
+      - name: docker-cred
       volumes:
       - name: jenkins-persistent-storage
         persistentVolumeClaim:

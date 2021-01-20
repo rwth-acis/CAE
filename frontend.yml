@@ -55,6 +55,8 @@ spec:
         envFrom:
           - configMapRef:
               name: cae-config
+      imagePullSecrets:
+      - name: docker-cred
 ---
 kind: Service
 apiVersion: v1
@@ -99,6 +101,8 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 1234
+      imagePullSecrets:
+      - name: docker-cred
 ---
 kind: Service
 apiVersion: v1
