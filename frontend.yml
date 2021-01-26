@@ -22,7 +22,7 @@ spec:
         kubernetes.io/role: master
       containers:
       - name: cae-frontend
-        image: rwthacis/cae-frontend
+        image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/cae-frontend:master
         imagePullPolicy: Always
         ports:
         - containerPort: 8070
@@ -55,6 +55,8 @@ spec:
         envFrom:
           - configMapRef:
               name: cae-config
+      imagePullSecrets:
+      - name: docker-cred
 ---
 kind: Service
 apiVersion: v1
@@ -95,10 +97,12 @@ spec:
         kubernetes.io/role: master
       containers:
       - name: yjs-server
-        image: rwthacis/y-websockets-server
+        image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/y-websockets-server
         imagePullPolicy: Always
         ports:
         - containerPort: 1234
+      imagePullSecrets:
+      - name: docker-cred
 ---
 kind: Service
 apiVersion: v1

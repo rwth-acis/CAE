@@ -22,7 +22,7 @@ spec:
         kubernetes.io/role: master
       containers:
       - name: jenkins
-        image: rwthacis/cae-jenkins
+        image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/cae-jenkins:master
         imagePullPolicy: Always
         ports:
         - containerPort: 8082
@@ -63,6 +63,8 @@ spec:
         envFrom:
           - configMapRef:
               name: cae-config
+      imagePullSecrets:
+      - name: docker-cred
       volumes:
       - name: jenkins-persistent-storage
         persistentVolumeClaim:

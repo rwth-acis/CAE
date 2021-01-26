@@ -22,7 +22,7 @@ spec:
         kubernetes.io/role: master
       containers:
       - name: cae-code-generation-service
-        image: rwthacis/cae-code-generation-service
+        image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/cae-code-generation-service:master
         imagePullPolicy: Always
         ports: 
         - containerPort: 8080
@@ -108,7 +108,7 @@ spec:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
       - name: cae-model-persistence-service
-        image: rwthacis/cae-model-persistence-service
+        image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/cae-model-persistence-service:master
         imagePullPolicy: Always
         ports: 
         - containerPort: 8081
@@ -152,7 +152,7 @@ spec:
         - name: INIT_WIREFRAME_EXTENSION
           value: 'true'
       - name: cae-project-management-service
-        image: rwthacis/cae-project-management-service
+        image: registry.tech4comp.dbis.rwth-aachen.de/rwthacis/cae-project-management-service:master
         imagePullPolicy: Always
         ports:
         - containerPort: 8082
@@ -211,6 +211,8 @@ spec:
         envFrom:
           - configMapRef:
               name: cae-config
+      imagePullSecrets:
+      - name: docker-cred
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
